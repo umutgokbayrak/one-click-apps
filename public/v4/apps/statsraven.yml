@@ -1,0 +1,41 @@
+captainVersion: 4
+services:
+    '$$cap_appname':
+        image: ghcr.io/umutgokbayrak/statsraven:$$cap_statsraven_version
+        restart: always
+        volumes:
+            - '$$cap_appname-data:/data'
+        environment:
+            ANTHROPIC_API_KEY: '$$cap_anthropic_api_key'
+        caproverExtra:
+            containerHttpPort: '7600'
+caproverOneClickApp:
+    variables:
+        - id: '$$cap_statsraven_version'
+          label: StatsRaven Version
+          defaultValue: '0.2.0'
+          description: Check the available tags at https://github.com/users/umutgokbayrak/packages/container/package/statsraven
+          validRegex: '/^([^\s^\/])+$/'
+        - id: '$$cap_anthropic_api_key'
+          label: Anthropic API Key (optional)
+          defaultValue: ''
+          description: Enables chat. Leave empty to skip it. You can also set an AI provider later in the app's Settings.
+    instructions:
+        start: |-
+            StatsRaven is self-hosted analytics you can talk to. One binary runs web analytics with a cookieless snippet, logs, product events, chat in plain language and an MCP server.
+
+            The free edition covers 1 project with 7 days of retention. Data is stored in a persistent volume.
+        end: |-
+            StatsRaven is deployed. Next steps:
+
+            1. Enable HTTPS for $$cap_appname in its HTTP Settings.
+            2. Open the app's logs (Deployment tab, View App Logs) and copy the setup token printed on the first start.
+            3. Open https://$$cap_appname.$$cap_root_domain and enter the setup token.
+
+            To receive OpenTelemetry data over gRPC, map port 4317 in the app's App Configs, Port Mapping.
+
+            Data is kept in the $$cap_appname-data volume.
+    displayName: StatsRaven
+    isOfficial: false
+    description: Self-hosted analytics you can talk to. Web analytics, logs, product events and an MCP server in one binary.
+    documentation: https://statsraven.com/docs/
